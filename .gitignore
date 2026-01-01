@@ -1,0 +1,14 @@
+node_modules/
+dist/
+target/
+*.wav
+.DS_Store
+Thumbs.db
+*.exe
+*.test
+*.out
+/architecture.md
+gitdate_plan.sh
+generate_chunks.sh
+run_all.sh
+part_*.sh
