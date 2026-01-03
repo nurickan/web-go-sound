@@ -1,0 +1,19 @@
+version: "3"
+tasks:
+  setup:
+    desc: Install dependencies
+    cmds:
+      - cd web && npm install
+  dev:
+    desc: Start dev server
+    cmds:
+      - cd web && npm run dev
+  build-wasm:
+    desc: Build Go WASM binary
+    cmds:
+      - GOOS=js GOARCH=wasm go build -o web/public/wasm/synth.wasm ./cmd/wasm
+  test-all:
+    desc: Run all tests
+    cmds:
+      - go test ./...
+      - cd web && npm test
