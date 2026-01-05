@@ -1,0 +1,12 @@
+linters:
+  enable:
+    - gofmt
+    - govet
+    - staticcheck
+    - errcheck
+    - gosimple
+    - ineffassign
+    - unused
+linters-settings:
+  staticcheck:
+    checks: ["all"]
