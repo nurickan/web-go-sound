@@ -1,0 +1,7 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": ["--fast"],
+  "typescript.tsdk": "web/node_modules/typescript/lib"
+}
