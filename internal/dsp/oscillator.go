@@ -14,10 +14,11 @@ type Oscillator struct {
 	phaseStep  float64
 	waveform   Waveform
 	sampleRate float64
+	table      *Wavetable
 }
 
 func NewOscillator(sr float64) *Oscillator {
-	return &Oscillator{sampleRate: sr}
+	return &Oscillator{sampleRate: sr, table: NewSineTable()}
 }
 
 func (o *Oscillator) SetFreq(freq float64) {
@@ -26,6 +27,16 @@ func (o *Oscillator) SetFreq(freq float64) {
 
 func (o *Oscillator) SetWaveform(w Waveform) {
 	o.waveform = w
+	switch w {
+	case WaveSine:
+		o.table = NewSineTable()
+	case WaveSaw:
+		o.table = NewSawTable()
+	case WaveSquare:
+		o.table = NewSquareTable()
+	case WaveTriangle:
+		o.table = NewTriangleTable()
+	}
 }
 
 func (o *Oscillator) Process(buf MonoBuffer) {
@@ -40,24 +51,11 @@ func (o *Oscillator) tick() Sample {
 	if o.phase >= 1.0 {
 		o.phase -= 1.0
 	}
-	switch o.waveform {
-	case WaveSine:
-		return Sample(sin2pi(p))
-	case WaveSaw:
-		return Sample(2.0*p - 1.0)
-	case WaveSquare:
-		if p < 0.5 {
-			return 1.0
-		}
-		return -1.0
-	case WaveTriangle:
-		if p < 0.5 {
-			return Sample(4.0*p - 1.0)
-		}
-		return Sample(3.0 - 4.0*p)
-	default:
-		return 0
-	}
+	idx := int(p * TableSize)
+	frac := (p*TableSize - float64(idx))
+	a := o.table.Read(idx)
+	b := o.table.Read(idx + 1)
+	return a + Sample(frac)*float64(b-a)
 }
 
 func (o *Oscillator) Reset() {
