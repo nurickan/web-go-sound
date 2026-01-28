@@ -15,12 +15,11 @@ type ADSR struct {
 	DecayTime    float64
 	SustainLevel float64
 	ReleaseTime  float64
-
-	phase    ADSRPhase
-	level    float64
-	samples  int
-	phasePos int
-	sr       float64
+	phase        ADSRPhase
+	level        float64
+	samples      int
+	phasePos     int
+	sr           float64
 }
 
 func NewADSR(sr float64) *ADSR {
@@ -32,16 +31,12 @@ func (e *ADSR) Gate(on bool) {
 		e.phase = PhaseAttack
 		e.phasePos = 0
 		e.samples = SecondsToSamples(e.AttackTime)
-		if e.samples < 1 {
-			e.samples = 1
-		}
+		if e.samples < 1 { e.samples = 1 }
 	} else if e.phase != PhaseIdle {
 		e.phase = PhaseRelease
 		e.phasePos = 0
 		e.samples = SecondsToSamples(e.ReleaseTime)
-		if e.samples < 1 {
-			e.samples = 1
-		}
+		if e.samples < 1 { e.samples = 1 }
 	}
 }
 
@@ -62,9 +57,7 @@ func (e *ADSR) tick() Sample {
 			e.phase = PhaseDecay
 			e.phasePos = 0
 			e.samples = SecondsToSamples(e.DecayTime)
-			if e.samples < 1 {
-				e.samples = 1
-			}
+			if e.samples < 1 { e.samples = 1 }
 		}
 	case PhaseDecay:
 		e.phasePos++
@@ -85,12 +78,11 @@ func (e *ADSR) tick() Sample {
 			e.level = 0
 		}
 	}
+	if e.level < 0 { e.level = 0 }
 	return Sample(e.level)
 }
 
-func (e *ADSR) IsActive() bool {
-	return e.phase != PhaseIdle
-}
+func (e *ADSR) IsActive() bool { return e.phase != PhaseIdle }
 
 func (e *ADSR) Reset() {
 	e.phase = PhaseIdle
