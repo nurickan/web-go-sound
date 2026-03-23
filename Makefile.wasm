@@ -1,0 +1,2 @@
+GOOS=js GOARCH=wasm go build -o web/public/wasm/synth.wasm cmd/wasm/main.go
+gzip -f web/public/wasm/synth.wasm
